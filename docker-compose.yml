@@ -1,0 +1,45 @@
+services:
+  postgres:
+    container_name: postgres1
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+    volumes:
+      - ./postgres-data1:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+      
+  balance:
+    container_name: balance1
+    build:
+        context: Balance
+        dockerfile: Dockerfile
+    image: balance:latest
+    ports:
+        - 8082:8082
+    networks:
+        - postgres  
+    restart: unless-stopped
+    
+  giftcard:
+    container_name: giftcard1
+    build:
+        context: GiftCard
+        dockerfile: Dockerfile
+    image: giftcard:latest
+    ports:
+        - 8081:8081
+    networks:
+        - postgres  
+    restart: unless-stopped   
+
+networks:
+  postgres:
+    driver: bridge
+
+
